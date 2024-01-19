@@ -1,50 +1,159 @@
 library(shiny)
 library(ggplot2)
 library(bslib)
-library(gridlayout)
 library(onsvplot)
+library(plotly)
+library(leaflet)
 
-ui <- page_navbar(
-  title = "DataSUS",
-  theme = bs_theme(preset = "lux",
-                           fg = onsv_palette$blue,
-                           bg = "white"),
-  collapsible = T,
-  selected = "home",
-  sidebar = sidebar(
-    width = 250,
-    open = "desktop",
-    title = sliderInput(
-      inputId = "date_range",
-      label = "Anos",
-      min = 1996,
-      max = 2022,
-      value = 1996,
-      ticks = F,
-      sep = ""
+## Home ---
+
+home_panel <- nav_panel(
+  value = "home",
+  title = "Home",
+  icon = bsicons::bs_icon("house"),
+  layout_columns(
+    fill = FALSE,
+    height = "90px",
+    value_box(
+      title = "Município",
+      value = textOutput(
+        outputId = "municipioBox"
+      )
     ),
-    selectInput(
-      inputId = "selector",
-      label = "Variáveis",
-      choices = c(
-        "A",
-        "B",
-        "C"
+    value_box(
+      title = "Estado / UF",
+      value = textOutput(
+        outputId = "ufBox"
+      )
+    ),
+    value_box(
+      title = "Região",
+      value = textOutput(
+        outputId = "regiaoBox"
+      )
+    ),
+    value_box(
+      title = "Quantidade de óbitos",
+      value = textOutput(
+        outputId = "obitosBox"
       )
     )
   ),
-  nav_panel(title = "Home", 
-            value = "home",
-            layout_columns(card(full_screen = T),
-                           card(full_screen = T)),
-            layout_columns(card(full_screen = T))),
-  nav_panel(title = "Sobre",
-            value = "about")
+  layout_columns(
+    col_widths = c(8, 4, 6, 6),
+    row_heights = c(1.5, 1),
+    card(
+      card_header("Mapa"),
+      full_screen = TRUE,
+      leafletOutput(outputId = "mapa")
+    ),
+    card(
+      card_header("Pirâmide etária das vítimas"),
+      full_screen = TRUE,
+      plotlyOutput(outputId = "piramide")
+    ),
+    card(
+      card_header("Série temporal"),
+      full_screen = TRUE,
+      plotlyOutput(outputId = "serie")
+    ),
+    card(
+      card_header("Modo de transporte das vítimas"),
+      full_screen = TRUE,
+      plotlyOutput(outputId = "modal")
+    )
+  )
 )
 
+## Sobre ----
+
+about_panel <- nav_panel(
+  value = "about",
+  title = "Sobre",
+  icon = bsicons::bs_icon("info-circle"),
+  layout_columns(
+    card(
+      card_header("Metodologia"),
+      includeMarkdown("text/metodologia.md")
+    ),
+    card(
+      card_header("Versionamento"),
+      includeMarkdown("text/versionamento.md")
+    )
+  )
+)
+
+## Sidebar ----
+
+filter_sidebar <- sidebar(
+  title = "Filtros",
+  selectizeInput(
+    inputId = "uf",
+    label = "Selecione a UF",
+    choices = c("test1", "test2")
+  ),
+  selectizeInput(
+    inputId = "municipio",
+    label = "Selecione o município",
+    choices = c("test1", "test2")
+  ),
+  selectizeInput(
+    inputId = "ano",
+    label = "Selecione o ano",
+    choices = seq(1996, 2022, 1)
+  ),
+  actionButton(
+    inputId = "filter",
+    label = "Aplicar",
+    icon = icon("cog"),
+    class = "btn-primary"
+  )
+)
+
+## UI ----
+
+ui <- page_navbar(
+  title = "Óbitos no Trânsito Brasileiro",
+  home_panel,
+  about_panel,
+  sidebar = filter_sidebar,
+  bg = onsv_palette$blue,,
+  theme = bs_theme(
+    primary = onsv_palette$blue,
+    warning = onsv_palette$yellow,
+    danger = onsv_palette$red,
+    success = onsv_palette$green
+  )
+)
+
+## Server -----
 
 server <- function(input, output) {
-  
+
+  output$municipioBox <- renderText({
+
+  })
+  output$ufBox <- renderText({
+    
+  })
+  output$regiaoBox <- renderText({
+    
+  })
+  output$obitosBox <- renderText({
+    
+  })
+  output$mapa <- renderLeaflet({
+    
+  })
+  output$piramide <- renderPlotly({
+    
+  })
+  output$serie <- renderPlotly({
+    
+  })
+  output$modal <- renderPlotly({
+    
+  })
 }
 
 shinyApp(ui, server)
