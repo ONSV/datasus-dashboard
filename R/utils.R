@@ -8,15 +8,20 @@ load(here("data","municipios.rda"))
 load(here("data","regioes.rda"))
 load(here("data","rtdeaths.rda"))
 
-# prepara dados para visualização
-prep_data <- function(data, year, code) {
-  res <- data |> 
-    tibble() |> 
-    filter(ano_ocorrencia == year) |> 
+
+# script para pirâmide
+prep_pyramid <- function(data, year, cod) {
+  res <- 
+    tibble(data) |> 
     rename(code_muni = cod_municipio_ocor) |> 
-    relocate(code_muni) |> 
-    left_join(x = municipios, by = "code_muni") |> 
-    filter(code_muni == code)
-  
+    relocate(code_muni) |>  
+    filter(ano_ocorrencia == year) |> 
+    count(code_muni, faixa_etaria_vitima, sexo_vitima, name = "mortes") |> 
+    filter(code_muni == cod) |> 
+    complete(sexo_vitima, 
+             faixa_etaria_vitima = unique(data$faixa_etaria_vitima),
+             fill = list(mortes = 0)) |> 
+    select(-code_muni)
+    
   return(res)
 }
