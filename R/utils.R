@@ -12,6 +12,7 @@ load(here("data","rtdeaths.rda"))
 
 
 # script para pirâmide
+
 prep_pyramid <- function(data, year, cod) {
   res <- 
     tibble(data) |> 
@@ -35,7 +36,7 @@ prep_pyramid <- function(data, year, cod) {
     mutate(abs_mortes = abs(mortes)) |> 
     plot_ly(x = ~mortes, y = ~faixa_etaria_vitima, 
             color = ~sexo_vitima, colors = c(onsv_palette$blue, onsv_palette$yellow)) |> 
-    add_bars(orientation = 'h', hoverinfo = "text", text = ~abs_mortes,
+    add_bars(orientation = 'h', hoverinfo = "text", text = ~paste(abs_mortes, "vítima(s)"),
              textposition = "none") |> 
     layout(bargap = 0.1, barmode = 'overlay',
            xaxis = list(tickmode = 'array', 
@@ -72,7 +73,7 @@ prep_ts <- function(data, year, cod) {
     add_trace(x = ~data_ocorrencia, y = ~mortes, fill = "tozeroy",
               line = list(color = onsv_palette$blue, width = 1),
               fillcolor = 'rgba(0, 73, 110, 0.80)', hoverinfo = 'text',
-              text = ~paste(mortes,"vítimas")) |> 
+              text = ~paste(mortes,"vítima(s)")) |> 
     layout(showlegend = F,
            xaxis = list(title = ""),
            yaxis = list(title = ""))
@@ -80,5 +81,29 @@ prep_ts <- function(data, year, cod) {
   return(plot)
 }
 
-prep_ts(rtdeaths, 2020, "353060")
+# scrips para barras (modal)
+
+prep_bars <- function(data, year, cod) {
+  res <- 
+    tibble(data) |> 
+    rename(code_muni = cod_municipio_ocor) |> 
+    filter(ano_ocorrencia == year) |> 
+    left_join(x = municipios, "code_muni") |> 
+    st_drop_geometry() |> 
+    filter(code_muni == cod) |> 
+    count(modal_vitima, name = "mortes") |> 
+    complete(modal_vitima = unique(data$modal_vitima),
+             fill = list(mortes = 0))
+  
+  plot <- res |> 
+    plot_ly(x = ~mortes, y = ~reorder(modal_vitima, mortes), 
+            type = 'bar') |> 
+    layout(yaxis = list(title = "", ticklen = 3, tickcolor = "white"),
+           xaxis = list(title = ""))
+    
+  
+  return(plot)
+}
+
+# prep_bars(rtdeaths, 2020, "330455")
 
