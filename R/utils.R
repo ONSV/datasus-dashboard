@@ -4,12 +4,12 @@ library(sf)
 library(leaflet)
 library(plotly)
 library(onsvplot)
+library(tmap)
 
 load(here("data","estados.rda"))
 load(here("data","municipios.rda"))
 load(here("data","regioes.rda"))
 load(here("data","rtdeaths.rda"))
-
 
 # script para pirâmide
 
@@ -105,5 +105,45 @@ prep_bars <- function(data, year, cod) {
   return(plot)
 }
 
-# prep_bars(rtdeaths, 2020, "330455")
+# script para mapa
+
+prep_map <- function(data, year, cod, uf) {
+  res <-
+    tibble(data) |> 
+    rename(code_muni = cod_municipio_ocor) |> 
+    filter(ano_ocorrencia == year) |> 
+    count(code_muni, name = "mortes") |> 
+    left_join(x = municipios, by = "code_muni") |> 
+    mutate(mortes = replace_na(mortes, 0)) |> 
+    filter(abbrev_state == uf) |> 
+    st_transform(crs = '+proj=longlat +datum=WGS84')
+
+  pal <- colorQuantile(
+    palette = "YlGnBu",
+    domain = res$mortes,
+    probs = seq(0, 1, length.out = 3)
+  )
+  
+  plot <- 
+    leaflet(res) |> 
+    addTiles() |> 
+    addPolygons(fillColor = ~pal(mortes), fillOpacity = 1,
+                weight = 1, color = "black")
+  
+  # plot <- 
+  #   tm_shape(res) + 
+  #   tm_polygons("mortes")
+  # 
+  # plot <- tmap_leaflet(
+  #   plot,
+  #   in.shiny = T,
+  #   add.titles = F
+  # ) |> 
+  #   leaflet::removeLayersControl() |> 
+  #   addTiles()
+    
+  return(plot)
+}
+
+prep_map(rtdeaths, 2020, "353060", "SP")
 
