@@ -167,17 +167,43 @@ server <- function(input, output) {
     prep_bars(rtdeaths, input$ano, input$municipio)
   })
   
+  get_muni <- eventReactive(input$filter, {
+    req(input$municipio)
+    code_to_name_muni(input$municipio)
+  })
+  
+  get_uf <- eventReactive(input$filter, {
+    req(input$uf)
+    uf_acronym_to_name(input$uf)
+  })
+  
+  get_region <- eventReactive(input$filter, {
+    req(input$uf)
+    uf_to_region(input$uf)
+  })
+  
+  get_deaths <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    filter(
+      rtdeaths, 
+      ano_ocorrencia == input$ano, 
+      cod_municipio_ocor == input$municipio
+    ) |> nrow()
+  })
+  
   output$municipioBox <- renderText({
-    
+    get_muni()
   })
   output$ufBox <- renderText({
-    
+    get_uf()
   })
   output$regiaoBox <- renderText({
-    
+    get_region()
   })
   output$obitosBox <- renderText({
-    
+    get_deaths()
   })
   output$mapa <- renderLeaflet({
     make_map()

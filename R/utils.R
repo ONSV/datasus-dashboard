@@ -11,7 +11,7 @@ load(here("data","regioes.rda"))
 load(here("data","rtdeaths.rda"))
 load(here("data","lista_municipios.rda"))
 
-# script para pirâmide
+# script para pirâmide etária
 
 prep_pyramid <- function(data, year, cod) {
   res <- 
@@ -84,7 +84,7 @@ prep_ts <- function(data, year, cod) {
   return(plot)
 }
 
-# scrips para barras (modal)
+# scrips para bar plot (modal)
 
 prep_bars <- function(data, year, cod) {
   res <- 
@@ -108,7 +108,7 @@ prep_bars <- function(data, year, cod) {
   return(plot)
 }
 
-# script para mapa
+# script para criar mapa leaflet
 
 prep_map <- function(data, year, uf, cod) {
   res <-
@@ -205,6 +205,29 @@ select_filter <- function(df, uf) {
 
 code_to_name_muni <- function(cod) {
   res <- filter(lista_municipios, code_muni == cod)$name_muni
+  
+  return(res)
+}
+
+# função para traduzir sigla de uf para nome
+
+uf_acronym_to_name <- function(uf) {
+  states <- c("Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará", "Distrito Federal", 
+              "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", "Mato Grosso do Sul", 
+              "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro", 
+              "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", 
+              "São Paulo", "Sergipe", "Tocantins")
+  acronyms <- c("AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", 
+                "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO")
+  brazil_states_df <- tibble(State = states, Acronym = acronyms)
+  
+  res <- select(filter(brazil_states_df, Acronym == uf), State)[[1]]
+  
+  return(res)
+}
+
+uf_to_region <- function(uf) {
+  res <- select(filter(estados, abbrev_state == uf), name_region)[[1]]
   
   return(res)
 }
