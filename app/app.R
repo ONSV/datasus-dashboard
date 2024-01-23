@@ -5,6 +5,7 @@ library(onsvplot)
 library(plotly)
 library(leaflet)
 library(here)
+library(shinycssloaders)
 source(here("R","utils.R"))
 
 ## Home ---

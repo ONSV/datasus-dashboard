@@ -99,7 +99,7 @@ prep_bars <- function(data, year, cod) {
              fill = list(mortes = 0))
   
   plot <- res |> 
-    plot_ly(y = ~mortes, x = ~reorder(modal_vitima, mortes), 
+    plot_ly(x = ~mortes, y = ~reorder(modal_vitima, mortes), 
             type = 'bar') |> 
     layout(xaxis = list(title = "", tickangle = 45),
            yaxis = list(title = ""))
