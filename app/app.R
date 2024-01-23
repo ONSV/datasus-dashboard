@@ -4,6 +4,9 @@ library(bslib)
 library(onsvplot)
 library(plotly)
 library(leaflet)
+library(here)
+source(here("R","utils.R"))
+load(here("data","lista_municipios.rda"))
 
 ## Home ---
 
@@ -90,12 +93,13 @@ filter_sidebar <- sidebar(
   selectizeInput(
     inputId = "uf",
     label = "Selecione a UF",
-    choices = c("test1", "test2")
+    choices = sort(unique(lista_municipios$abbrev_state)),
+    selected = "SP"
   ),
   selectizeInput(
     inputId = "municipio",
     label = "Selecione o município",
-    choices = c("test1", "test2")
+    choices = select_filter(lista_municipios, "SP")
   ),
   selectizeInput(
     inputId = "ano",
@@ -129,9 +133,18 @@ ui <- page_navbar(
 ## Server -----
 
 server <- function(input, output) {
-
+  
+  observe({
+    updateSelectizeInput(inputId = "municipio", 
+                         choices = select_filter(lista_municipios, input$uf))
+  })
+  
+  # make_map <- reactive({
+  #   prep_map(rfdeats)
+  # })
+  
   output$municipioBox <- renderText({
-
+    
   })
   output$ufBox <- renderText({
     

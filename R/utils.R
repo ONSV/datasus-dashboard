@@ -141,3 +141,13 @@ prep_map <- function(data, year, uf) {
     
   return(plot)
 }
+
+# função para update de selectInput
+
+select_filter <- function(df, uf) {
+  filtered <- arrange(filter(df, abbrev_state == uf), name_muni)
+  res <- setNames(as.character(filtered$code_muni), 
+                  as.character(filtered$name_muni))
+  
+  return(res)
+}
