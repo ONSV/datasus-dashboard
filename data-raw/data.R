@@ -1,7 +1,7 @@
 library(tidyverse)
 library(geobr)
 library(here)
-library(readODS)
+library(sf)
 
 # salvar dados geospaciais
 
@@ -22,8 +22,7 @@ save(rtdeaths, file = here("data","rtdeaths.rda"))
 
 # salvando códigos de municípios IBGE
 
-lista_municipios <- read_ods(here("data-raw","ibge_cod_municipios.ods")) |> 
-  rename(code_muni = `Código.Município.Completo`, name_muni = Nome_Município,
-         uf = Nome_UF) |> 
-  select(code_muni, name_muni, uf)
-save(lista_municipios, file = here("data","lista_municipios.rda"))
+lista_municipios <- municipios |> 
+  st_drop_geometry()
+
+save(lista_municipios, file = here("data", "lista_municipios.rda"))
