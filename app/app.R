@@ -117,7 +117,7 @@ ui <- page_navbar(
   home_panel,
   about_panel,
   sidebar = filter_sidebar,
-  bg = onsv_palette$blue,,
+  bg = onsv_palette$blue,
   theme = bs_theme(
     primary = onsv_palette$blue,
     warning = onsv_palette$yellow,

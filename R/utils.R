@@ -4,7 +4,6 @@ library(sf)
 library(leaflet)
 library(plotly)
 library(onsvplot)
-library(tmap)
 
 load(here("data","estados.rda"))
 load(here("data","municipios.rda"))
