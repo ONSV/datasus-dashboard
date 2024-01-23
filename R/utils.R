@@ -110,7 +110,7 @@ prep_bars <- function(data, year, cod) {
 
 # script para mapa
 
-prep_map <- function(data, year, uf) {
+prep_map <- function(data, year, uf, cod) {
   res <-
     tibble(data) |> 
     rename(code_muni = cod_municipio_ocor) |> 
@@ -121,7 +121,23 @@ prep_map <- function(data, year, uf) {
     filter(abbrev_state == uf) |> 
     st_transform(crs = '+proj=longlat +datum=WGS84')
   
+  filter_res <- filter(res, code_muni == cod)
+  
+  centroid <- st_coordinates(st_centroid(filter_res))
+  
   max_value <- max(res$mortes)
+  
+  labels <- sprintf(
+    "<strong>%s</strong><br/>%g óbitos",
+    lapply(res$code_muni, code_to_name_muni),
+    res$mortes
+  ) |> lapply(htmltools::HTML)
+  
+  label_filter <- sprintf(
+    "<strong>%s</strong><br/>%g óbitos",
+    lapply(filter_res$code_muni, code_to_name_muni),
+    filter_res$mortes
+  ) |> lapply(htmltools::HTML)
   
   pal <- colorBin(
     palette = "YlGnBu",
@@ -130,19 +146,47 @@ prep_map <- function(data, year, uf) {
   )
   
   plot <- 
-    leaflet(res) |> 
+    leaflet() |> 
     addTiles() |> 
-    addPolygons(fillColor = ~pal(mortes), fillOpacity = 1,
-                weight = 1, color = "black",
-                highlightOptions = highlightOptions(color = "white",
-                                                    weight = 3,
-                                                    bringToFront = T,
-                                                    opacity = 1),
-                label = paste(lapply(res$code_muni, code_to_name_muni),":",
-                              res$mortes, "vítima(s)")) |>
-    addLegend('bottomright', pal = pal, values = ~mortes,
-              title = "Mortes", opacity = 1, 
-              labFormat = labelFormat(digits = 0, big.mark = "."))
+    addPolygons(
+      data = res, 
+      fillColor = ~pal(mortes), 
+      fillOpacity = 1,
+      weight = 1, 
+      color = "black",
+      highlightOptions = highlightOptions(
+        color = "white",
+        weight = 3,
+        bringToFront = T,
+        opacity = 1
+      ),
+      label = labels
+    ) |> 
+    addPolygons(
+      data = filter_res,
+      fillColor = ~pal(mortes),
+      fillOpacity = 1,
+      weight = 3,
+      color = onsv_palette$yellow,
+      opacity = 0.75,
+      highlightOptions = highlightOptions(
+        color = "white",
+        weight = 3,
+        bringToFront = T,
+        opacity = 1
+      ),
+      label = label_filter
+    ) |> 
+    addLegend(
+      data = res,
+      position = "bottomright",
+      pal = pal,
+      values = ~mortes,
+      opacity = 1,
+      title = "Óbitos",
+      labFormat = labelFormat(digits = 0)
+    ) |> 
+    setView(lng = centroid[1], lat = centroid[2], zoom = 9)
     
   return(plot)
 }

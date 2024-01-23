@@ -142,7 +142,8 @@ server <- function(input, output) {
   make_map <- eventReactive(input$filter, {
     req(input$uf)
     req(input$ano)
-    prep_map(rtdeaths, input$ano, input$uf)
+    req(input$municipio)
+    prep_map(rtdeaths, input$ano, input$uf, input$municipio)
   })
   
   make_pyramid <- eventReactive(input$filter, {
