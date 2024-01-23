@@ -39,28 +39,45 @@ home_panel <- nav_panel(
       )
     )
   ),
-  layout_columns(
-    col_widths = c(8, 4, 6, 6),
-    row_heights = c(1.5, 1),
-    card(
-      card_header("Mapa"),
-      full_screen = TRUE,
-      leafletOutput(outputId = "mapa")
+  tabsetPanel(
+    type = "pills",
+    tabPanel(
+      "Mapa",
+      layout_columns(
+        card(
+          card_header("Mapa"),
+          full_screen = TRUE,
+          leafletOutput(outputId = "mapa"),
+          min_height = "400px",
+          height = "600px"
+        )
+      )
     ),
-    card(
-      card_header("Pirâmide etária das vítimas"),
-      full_screen = TRUE,
-      plotlyOutput(outputId = "piramide")
-    ),
-    card(
-      card_header("Série temporal"),
-      full_screen = TRUE,
-      plotlyOutput(outputId = "serie")
-    ),
-    card(
-      card_header("Modo de transporte das vítimas"),
-      full_screen = TRUE,
-      plotlyOutput(outputId = "modal")
+    tabPanel(
+      "Gráficos",
+      layout_columns(
+        col_widths = c(6, 6),
+        card(
+          card_header("Pirâmide etária das vítimas"),
+          full_screen = TRUE,
+          plotlyOutput(outputId = "piramide")
+        ),
+        card(
+          card_header("Série temporal"),
+          full_screen = TRUE,
+          plotlyOutput(outputId = "serie")
+        ),
+        card(
+          card_header("Modo de transporte das vítimas"),
+          full_screen = TRUE,
+          plotlyOutput(outputId = "modal")
+        ),
+        card(
+          card_header("Modo de transporte e faixa etária das vítimas"),
+          full_screen = TRUE,
+          plotlyOutput(outputId = "heatmap")
+        )
+      )
     )
   )
 )
@@ -152,6 +169,9 @@ server <- function(input, output) {
     
   })
   output$modal <- renderPlotly({
+    
+  })
+  output$heatmap <- renderPlotly({
     
   })
 }
