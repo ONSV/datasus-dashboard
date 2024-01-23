@@ -121,7 +121,7 @@ filter_sidebar <- sidebar(
     inputId = "ano",
     label = "Selecione o ano",
     choices = seq(1996, 2022, 1),
-    selected = 2020
+    selected = last(seq(1996, 2022, 1))
   ),
   actionButton(
     inputId = "filter",
