@@ -148,7 +148,22 @@ server <- function(input, output) {
   make_pyramid <- eventReactive(input$filter, {
     req(input$uf)
     req(input$ano)
+    req(input$municipio)
     prep_pyramid(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_ts <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_ts(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_bars <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_bars(rtdeaths, input$ano, input$municipio)
   })
   
   output$municipioBox <- renderText({
@@ -170,10 +185,10 @@ server <- function(input, output) {
     make_pyramid()
   })
   output$serie <- renderPlotly({
-    
+    make_ts()
   })
   output$modal <- renderPlotly({
-    
+    make_bars()
   })
 }
 
