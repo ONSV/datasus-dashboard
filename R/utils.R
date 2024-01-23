@@ -35,12 +35,15 @@ prep_pyramid <- function(data, year, cod) {
                            yes = -mortes, no = mortes)) |> 
     mutate(abs_mortes = abs(mortes)) |> 
     plot_ly(x = ~mortes, y = ~faixa_etaria_vitima, 
-            color = ~sexo_vitima, colors = c(onsv_palette$blue, onsv_palette$yellow)) |> 
-    add_bars(orientation = 'h', hoverinfo = "text", text = ~paste(abs_mortes, "vítima(s)"),
+            color = ~sexo_vitima, 
+            colors = c(onsv_palette$blue, onsv_palette$yellow)) |> 
+    add_bars(orientation = 'h', hoverinfo = "text", 
+             text = ~paste(abs_mortes, "vítima(s)"),
              textposition = "none") |> 
     layout(bargap = 0.1, barmode = 'overlay',
            xaxis = list(tickmode = 'array', 
-                        tickvals = c(-(max_value),-max_value/2,0,max_value/2,max_value),
+                        tickvals = c(-(max_value), -max_value/2,
+                                     0, max_value/2, max_value),
                         ticktext = c(toString(max_value),
                                      toString(max_value/2),
                                      toString(0),
@@ -155,6 +158,7 @@ select_filter <- function(df, uf) {
 }
 
 # função para traduzir código para nome de município
+
 code_to_name_muni <- function(cod) {
   res <- filter(lista_municipios, code_muni == cod)$name_muni
   
