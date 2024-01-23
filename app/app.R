@@ -4,6 +4,8 @@ library(bslib)
 library(onsvplot)
 library(plotly)
 library(leaflet)
+library(here)
+source(here("R","utils.R"))
 
 ## Home ---
 
@@ -107,17 +109,19 @@ filter_sidebar <- sidebar(
   selectizeInput(
     inputId = "uf",
     label = "Selecione a UF",
-    choices = c("test1", "test2")
+    choices = sort(unique(lista_municipios$abbrev_state)),
+    selected = "SP"
   ),
   selectizeInput(
     inputId = "municipio",
     label = "Selecione o município",
-    choices = c("test1", "test2")
+    choices = select_filter(lista_municipios, "SP")
   ),
   selectizeInput(
     inputId = "ano",
     label = "Selecione o ano",
-    choices = seq(1996, 2022, 1)
+    choices = seq(1996, 2022, 1),
+    selected = 2020
   ),
   actionButton(
     inputId = "filter",
@@ -134,7 +138,7 @@ ui <- page_navbar(
   home_panel,
   about_panel,
   sidebar = filter_sidebar,
-  bg = onsv_palette$blue,,
+  bg = onsv_palette$blue,
   theme = bs_theme(
     primary = onsv_palette$blue,
     warning = onsv_palette$yellow,
@@ -146,30 +150,89 @@ ui <- page_navbar(
 ## Server -----
 
 server <- function(input, output) {
-
+  
+  observe({
+    updateSelectizeInput(inputId = "municipio", 
+                         choices = select_filter(lista_municipios, input$uf))
+  })
+  
+  make_map <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_map(rtdeaths, input$ano, input$uf, input$municipio)
+  })
+  
+  make_pyramid <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_pyramid(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_ts <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_ts(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_bars <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_bars(rtdeaths, input$ano, input$municipio)
+  })
+  
+  get_muni <- eventReactive(input$filter, {
+    req(input$municipio)
+    code_to_name_muni(input$municipio)
+  })
+  
+  get_uf <- eventReactive(input$filter, {
+    req(input$uf)
+    uf_acronym_to_name(input$uf)
+  })
+  
+  get_region <- eventReactive(input$filter, {
+    req(input$uf)
+    uf_to_region(input$uf)
+  })
+  
+  get_deaths <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    filter(
+      rtdeaths, 
+      ano_ocorrencia == input$ano, 
+      cod_municipio_ocor == input$municipio
+    ) |> nrow()
+  })
+  
   output$municipioBox <- renderText({
-
+    get_muni()
   })
   output$ufBox <- renderText({
-    
+    get_uf()
   })
   output$regiaoBox <- renderText({
-    
+    get_region()
   })
   output$obitosBox <- renderText({
-    
+    get_deaths()
   })
   output$mapa <- renderLeaflet({
-    
+    make_map()
   })
   output$piramide <- renderPlotly({
-    
+    make_pyramid()
   })
   output$serie <- renderPlotly({
-    
+    make_ts()
   })
   output$modal <- renderPlotly({
-    
+    make_bars()
   })
   output$heatmap <- renderPlotly({
     
