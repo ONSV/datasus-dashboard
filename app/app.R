@@ -6,7 +6,6 @@ library(plotly)
 library(leaflet)
 library(here)
 source(here("R","utils.R"))
-load(here("data","lista_municipios.rda"))
 
 ## Home ---
 
@@ -104,7 +103,8 @@ filter_sidebar <- sidebar(
   selectizeInput(
     inputId = "ano",
     label = "Selecione o ano",
-    choices = seq(1996, 2022, 1)
+    choices = seq(1996, 2022, 1),
+    selected = 2020
   ),
   actionButton(
     inputId = "filter",
@@ -139,9 +139,17 @@ server <- function(input, output) {
                          choices = select_filter(lista_municipios, input$uf))
   })
   
-  # make_map <- reactive({
-  #   prep_map(rfdeats)
-  # })
+  make_map <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    prep_map(rtdeaths, input$ano, input$uf)
+  })
+  
+  make_pyramid <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    prep_pyramid(rtdeaths, input$ano, input$municipio)
+  })
   
   output$municipioBox <- renderText({
     
@@ -156,10 +164,10 @@ server <- function(input, output) {
     
   })
   output$mapa <- renderLeaflet({
-    
+    make_map()
   })
   output$piramide <- renderPlotly({
-    
+    make_pyramid()
   })
   output$serie <- renderPlotly({
     

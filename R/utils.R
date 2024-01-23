@@ -9,6 +9,7 @@ load(here("data","estados.rda"))
 load(here("data","municipios.rda"))
 load(here("data","regioes.rda"))
 load(here("data","rtdeaths.rda"))
+load(here("data","lista_municipios.rda"))
 
 # script para pirâmide
 
@@ -134,20 +135,28 @@ prep_map <- function(data, year, uf) {
                                                     weight = 3,
                                                     bringToFront = T,
                                                     opacity = 1),
-                label = paste(res$mortes, "vítima(s)")) |>
+                label = paste(lapply(res$code_muni, code_to_name_muni),":",
+                              res$mortes, "vítima(s)")) |>
     addLegend('bottomright', pal = pal, values = ~mortes,
               title = "Mortes", opacity = 1, 
-              labFormat = labelFormat(digits = 0))
+              labFormat = labelFormat(digits = 0, big.mark = "."))
     
   return(plot)
 }
 
-# função para update de selectInput
+# função para atualizar de selectInput
 
 select_filter <- function(df, uf) {
   filtered <- arrange(filter(df, abbrev_state == uf), name_muni)
   res <- setNames(as.character(filtered$code_muni), 
                   as.character(filtered$name_muni))
+  
+  return(res)
+}
+
+# função para traduzir código para nome de município
+code_to_name_muni <- function(cod) {
+  res <- filter(lista_municipios, code_muni == cod)$name_muni
   
   return(res)
 }
