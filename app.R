@@ -181,6 +181,8 @@ server <- function(input, output) {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
+
+
     prep_map(rtdeaths, input$ano, input$uf, input$municipio)
   })
   
@@ -199,6 +201,17 @@ server <- function(input, output) {
   })
   
   make_bars <- eventReactive(input$filter, ignoreNULL = F, {
+    prep_pyramid(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_ts <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_ts(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_bars <- eventReactive(input$filter, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
@@ -243,7 +256,7 @@ server <- function(input, output) {
       cod_municipio_res == input$municipio
     ) |> nrow()
   })
-  
+
   output$municipioBox <- renderText({
     get_muni()
   })
