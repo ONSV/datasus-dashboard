@@ -1,36 +1,29 @@
 library(tidyverse)
-library(roadtrafficdeaths)
 library(geobr)
-library(leaflet)
-library(sf)
 library(here)
+library(readODS)
 
-# base de municípios
-geobr <- read_municipality(year = 2022)
+# salvar dados geospaciais
 
-municipios <- geobr |> 
-  mutate(code_muni = str_sub(as.character(code_muni),1,6))
+estados <- read_state()
+municipality <- read_municipality()
+municipios <- mutate(municipality, 
+                     code_muni = str_sub(as.character(code_muni),1,6))
+regioes <- read_region()
 
-mortes_munic <- rtdeaths |> 
-  select(cod_modal, modal_vitima, data_ocorrencia, ano_ocorrencia,
-         idade_vitima, faixa_etaria_vitima, sexo_vitima,
-         raca_vitima, cod_municipio_ocor) |> 
-  rename(code_muni = cod_municipio_ocor)
+save(estados, file = here("data", "estados.rda"))
+save(municipios,file = here("data", "municipios.rda"))
+save(regioes,file = here("data", "regioes.rda"))
 
-geodf_munic <- left_join(municipios, mortes_munic, by = "code_muni")
+# salvando rtdeaths para melhorar performance
 
-save(geodf_munic, file = here("data","geodf_munic.rda"))
+library(roadtrafficdeaths)
+save(rtdeaths, file = here("data","rtdeaths.rda"))
 
-# base de estados
-geobr <- read_state(year = 2020)
+# salvando códigos de municípios IBGE
 
-estados <- geobr |> 
-  rename(uf = name_state)
-
-mortes_estado <- rtdeaths |> 
-  select(cod_modal, modal_vitima, data_ocorrencia, ano_ocorrencia,
-         idade_vitima, faixa_etaria_vitima, sexo_vitima,
-         raca_vitima, nome_uf_ocor) |> 
-  rename(uf = nome_uf_ocor)
-
-geodf_estado <- left_join(mortes_estado, estados, by = "uf")
+lista_municipios <- read_ods(here("data-raw","ibge_cod_municipios.ods")) |> 
+  rename(code_muni = `Código.Município.Completo`, name_muni = Nome_Município,
+         uf = Nome_UF) |> 
+  select(code_muni, name_muni, uf)
+save(lista_municipios, file = here("data","lista_municipios.rda"))
