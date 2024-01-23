@@ -107,7 +107,7 @@ prep_bars <- function(data, year, cod) {
 
 # script para mapa
 
-prep_map <- function(data, year, cod, uf) {
+prep_map <- function(data, year, uf) {
   res <-
     tibble(data) |> 
     rename(code_muni = cod_municipio_ocor) |> 
@@ -117,33 +117,28 @@ prep_map <- function(data, year, cod, uf) {
     mutate(mortes = replace_na(mortes, 0)) |> 
     filter(abbrev_state == uf) |> 
     st_transform(crs = '+proj=longlat +datum=WGS84')
-
-  pal <- colorQuantile(
+  
+  max_value <- max(res$mortes)
+  
+  pal <- colorBin(
     palette = "YlGnBu",
-    domain = res$mortes,
-    probs = seq(0, 1, length.out = 3)
+    bins = c(0, max_value*0.05, max_value*0.1,
+             max_value*0.5, max_value*0.75, max_value)
   )
   
   plot <- 
     leaflet(res) |> 
     addTiles() |> 
     addPolygons(fillColor = ~pal(mortes), fillOpacity = 1,
-                weight = 1, color = "black")
-  
-  # plot <- 
-  #   tm_shape(res) + 
-  #   tm_polygons("mortes")
-  # 
-  # plot <- tmap_leaflet(
-  #   plot,
-  #   in.shiny = T,
-  #   add.titles = F
-  # ) |> 
-  #   leaflet::removeLayersControl() |> 
-  #   addTiles()
+                weight = 1, color = "black",
+                highlightOptions = highlightOptions(color = "white",
+                                                    weight = 3,
+                                                    bringToFront = T,
+                                                    opacity = 1),
+                label = paste(res$mortes, "vítima(s)")) |>
+    addLegend('bottomright', pal = pal, values = ~mortes,
+              title = "Mortes", opacity = 1, 
+              labFormat = labelFormat(digits = 0))
     
   return(plot)
 }
-
-prep_map(rtdeaths, 2020, "353060", "SP")
-
