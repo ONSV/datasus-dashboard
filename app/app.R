@@ -190,6 +190,13 @@ server <- function(input, output) {
     prep_bars(rtdeaths, input$ano, input$municipio)
   })
   
+  make_heatmap <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_heatmap(rtdeaths, input$ano, input$municipio)
+  })
+  
   get_muni <- eventReactive(input$filter, {
     req(input$municipio)
     code_to_name_muni(input$municipio)
@@ -241,7 +248,7 @@ server <- function(input, output) {
     make_bars()
   })
   output$heatmap <- renderPlotly({
-    
+    make_heatmap()
   })
 }
 

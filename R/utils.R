@@ -11,7 +11,7 @@ load(here("data","regioes.rda"))
 load(here("data","rtdeaths.rda"))
 load(here("data","lista_municipios.rda"))
 
-# script para pirâmide etária
+# função para pirâmide etária
 
 prep_pyramid <- function(data, year, cod) {
   res <- 
@@ -55,7 +55,7 @@ prep_pyramid <- function(data, year, cod) {
   return(plot)
 }
 
-# script para serie temporal
+# função para serie temporal
 
 prep_ts <- function(data, cod) {
   res <-
@@ -83,7 +83,7 @@ prep_ts <- function(data, cod) {
   return(plot)
 }
 
-# scrips para bar plot (modal)
+# função para bar plot (modal)
 
 prep_bars <- function(data, year, cod) {
   res <- 
@@ -107,7 +107,7 @@ prep_bars <- function(data, year, cod) {
   return(plot)
 }
 
-# script para criar mapa leaflet
+# função para criar mapa leaflet
 
 prep_map <- function(data, year, uf, cod) {
   res <-
@@ -187,6 +187,39 @@ prep_map <- function(data, year, uf, cod) {
     ) |> 
     setView(lng = centroid[1], lat = centroid[2], zoom = 9)
     
+  return(plot)
+}
+
+# função para criar heatmap
+
+prep_heatmap <- function(data, year, cod) {
+  res <-
+    tibble(rtdeaths) |> 
+    rename(code_muni = cod_municipio_ocor) |> 
+    filter(ano_ocorrencia == year) |> 
+    left_join(x = municipios, by = "code_muni") |> 
+    st_drop_geometry() |> 
+    filter(code_muni == cod) |> 
+    count(faixa_etaria_vitima, modal_vitima, name = "mortes") |> 
+    complete(faixa_etaria_vitima = unique(data$faixa_etaria_vitima),
+             modal_vitima = unique(data$modal_vitima),
+             fill  = list(mortes = 0)) |> 
+    drop_na() |> 
+    mutate(
+      tooltip_text = glue::glue("{modal_vitima} - {faixa_etaria_vitima}: {mortes}")
+    )
+  
+  plot <- res |>
+    plot_ly(y = ~modal_vitima, x = ~faixa_etaria_vitima, z = ~mortes,
+            type = "heatmap", showscale = F, text = ~tooltip_text,
+            hoverinfo = "text", colors = colorRamp(c("#CCEEFF", "#99DDFF","#55A9D4"))) |>
+    add_annotations(text = ~mortes, showarrow = F) |>
+    layout(xaxis = list(title = "Faixa Etária", ticklen = 1, tickcolor = "white",
+                        tickode = "array", tickvals = unique(res$faixa_etaria_vitima),
+                        ticktext = c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+"),
+                        tickfont = list(size = 10)),
+           yaxis = list(title = "", ticklen = 1, tickcolor = "white"))
+  
   return(plot)
 }
 
