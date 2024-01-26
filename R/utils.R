@@ -100,9 +100,9 @@ prep_bars <- function(data, year, cod) {
   
   plot <- res |> 
     plot_ly(x = ~mortes, y = ~reorder(modal_vitima, mortes), 
-            type = 'bar') |> 
+            type = 'bar', marker = list(color = 'rgb(0, 73, 109)')) |> 
     layout(xaxis = list(title = ""),
-           yaxis = list(title = ""))
+           yaxis = list(title = "", ticklen = 1, tickcolor = "white"))
     
   
   return(plot)
