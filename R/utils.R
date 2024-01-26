@@ -9,7 +9,7 @@ load("data/lista_municipios.rda")
 prep_pyramid <- function(data, year, cod) {
   res <- 
     tibble(data) |> 
-    rename(code_muni = cod_municipio_ocor) |> 
+    rename(code_muni = cod_municipio_res) |> 
     relocate(code_muni) |>  
     filter(ano_ocorrencia == year) |> 
     left_join(x = municipios, by = "code_muni") |> 
@@ -53,7 +53,7 @@ prep_pyramid <- function(data, year, cod) {
 prep_ts <- function(data, cod) {
   res <-
     tibble(data) |> 
-    rename(code_muni = cod_municipio_ocor) |>
+    rename(code_muni = cod_municipio_res) |>
     left_join(x = municipios, "code_muni") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
@@ -81,7 +81,7 @@ prep_ts <- function(data, cod) {
 prep_bars <- function(data, year, cod) {
   res <- 
     tibble(data) |> 
-    rename(code_muni = cod_municipio_ocor) |> 
+    rename(code_muni = cod_municipio_res) |> 
     filter(ano_ocorrencia == year) |> 
     left_join(x = municipios, "code_muni") |> 
     st_drop_geometry() |> 
@@ -105,7 +105,7 @@ prep_bars <- function(data, year, cod) {
 prep_map <- function(data, year, uf, cod) {
   res <-
     tibble(data) |> 
-    rename(code_muni = cod_municipio_ocor) |> 
+    rename(code_muni = cod_municipio_res) |> 
     filter(ano_ocorrencia == year) |> 
     count(code_muni, name = "mortes") |> 
     left_join(x = municipios, by = "code_muni") |> 
@@ -188,7 +188,7 @@ prep_map <- function(data, year, uf, cod) {
 prep_heatmap <- function(data, year, cod) {
   res <-
     tibble(rtdeaths) |> 
-    rename(code_muni = cod_municipio_ocor) |> 
+    rename(code_muni = cod_municipio_res) |> 
     filter(ano_ocorrencia == year) |> 
     left_join(x = municipios, by = "code_muni") |> 
     st_drop_geometry() |> 

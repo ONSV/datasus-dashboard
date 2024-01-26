@@ -221,7 +221,7 @@ server <- function(input, output) {
     filter(
       rtdeaths, 
       ano_ocorrencia == input$ano, 
-      cod_municipio_ocor == input$municipio
+      cod_municipio_res == input$municipio
     ) |> nrow()
   })
   
