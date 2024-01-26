@@ -50,7 +50,8 @@ home_panel <- nav_panel(
         card(
           card_header("Mapa"),
           full_screen = TRUE,
-          leafletOutput(outputId = "mapa"),
+          withSpinner(leafletOutput(outputId = "mapa", height = "500px"),
+                      type = 8, color = onsv_palette$blue),
           min_height = "400px",
           height = "600px"
         )
@@ -63,22 +64,26 @@ home_panel <- nav_panel(
         card(
           card_header("Pirâmide etária das vítimas"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "piramide")
+          withSpinner(plotlyOutput(outputId = "piramide"), type = 8,
+                      color = onsv_palette$blue)
         ),
         card(
           card_header("Série temporal"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "serie")
+          withSpinner(plotlyOutput(outputId = "serie"), type = 8,
+                      color = onsv_palette$blue)
         ),
         card(
           card_header("Modo de transporte das vítimas"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "modal")
+          withSpinner(plotlyOutput(outputId = "modal"), type = 8,
+                      color = onsv_palette$blue)
         ),
         card(
           card_header("Modo de transporte e faixa etária das vítimas"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "heatmap")
+          withSpinner(plotlyOutput(outputId = "heatmap"), type = 8,
+                      color = onsv_palette$blue)
         )
       )
     )
