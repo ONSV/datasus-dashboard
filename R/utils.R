@@ -57,29 +57,28 @@ prep_pyramid <- function(data, year, cod) {
 
 # script para serie temporal
 
-prep_ts <- function(data, year, cod) {
+prep_ts <- function(data, cod) {
   res <-
     tibble(data) |> 
-    rename(code_muni = cod_municipio_ocor) |> 
-    filter(ano_ocorrencia == year) |> 
-    left_join(x = municipios, by = "code_muni") |> 
+    rename(code_muni = cod_municipio_ocor) |>
+    left_join(x = municipios, "code_muni") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
-    count(data_ocorrencia, name = "mortes") |> 
-    arrange(data_ocorrencia) |> 
-    complete(data_ocorrencia = unique(data$data_ocorrencia), 
+    count(ano_ocorrencia, name = "mortes") |> 
+    complete(ano_ocorrencia = unique(data$ano_ocorrencia), 
              fill = list(mortes = 0)) |> 
-    filter(year(data_ocorrencia) == year)
+    drop_na() |> 
+    arrange(ano_ocorrencia)
   
   plot <- res |> 
-    plot_ly(type = 'scatter', mode = "lines") |> 
-    add_trace(x = ~data_ocorrencia, y = ~mortes, fill = "tozeroy",
-              line = list(color = onsv_palette$blue, width = 1),
-              fillcolor = 'rgba(0, 73, 110, 0.80)', hoverinfo = 'text',
-              text = ~paste(mortes,"vítima(s)")) |> 
-    layout(showlegend = F,
-           xaxis = list(title = ""),
-           yaxis = list(title = ""))
+    plot_ly(x = ~ano_ocorrencia, y = ~mortes, type = "scatter",
+            mode = "markers+lines", 
+            line = list(color = onsv_palette$blue),
+            marker = list(color = onsv_palette$blue),
+            hoverinfo = "text", 
+            text = ~paste0(ano_ocorrencia,", ",mortes, " vítima(s)")) |> 
+    layout(xaxis = list(title = ""),
+           yaxis = list(title = "", ticklen = 1, tickcolor = "white"))
   
   return(plot)
 }

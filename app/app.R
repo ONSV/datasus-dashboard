@@ -180,7 +180,7 @@ server <- function(input, output) {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
-    prep_ts(rtdeaths, input$ano, input$municipio)
+    prep_ts(rtdeaths, input$municipio)
   })
   
   make_bars <- eventReactive(input$filter, {
