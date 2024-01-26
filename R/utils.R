@@ -151,7 +151,7 @@ prep_map <- function(data, year, uf, cod) {
     addPolygons(
       data = res, 
       fillColor = ~pal(mortes), 
-      fillOpacity = 1,
+      fillOpacity = 0.7,
       weight = 1, 
       color = "black",
       highlightOptions = highlightOptions(
@@ -165,7 +165,7 @@ prep_map <- function(data, year, uf, cod) {
     addPolygons(
       data = filter_res,
       fillColor = ~pal(mortes),
-      fillOpacity = 1,
+      fillOpacity = 0.7,
       weight = 3,
       color = onsv_palette$yellow,
       opacity = 0.75,
