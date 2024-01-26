@@ -5,6 +5,7 @@ library(onsvplot)
 library(plotly)
 library(leaflet)
 library(here)
+library(shinycssloaders)
 source(here("R","utils.R"))
 
 ## Home ---
@@ -49,7 +50,8 @@ home_panel <- nav_panel(
         card(
           card_header("Mapa"),
           full_screen = TRUE,
-          leafletOutput(outputId = "mapa"),
+          withSpinner(leafletOutput(outputId = "mapa", height = "500px"),
+                      type = 8, color = onsv_palette$blue),
           min_height = "400px",
           height = "600px"
         )
@@ -62,22 +64,26 @@ home_panel <- nav_panel(
         card(
           card_header("Pirâmide etária das vítimas"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "piramide")
+          withSpinner(plotlyOutput(outputId = "piramide"), type = 8,
+                      color = onsv_palette$blue)
         ),
         card(
           card_header("Série temporal"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "serie")
+          withSpinner(plotlyOutput(outputId = "serie"), type = 8,
+                      color = onsv_palette$blue)
         ),
         card(
           card_header("Modo de transporte das vítimas"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "modal")
+          withSpinner(plotlyOutput(outputId = "modal"), type = 8,
+                      color = onsv_palette$blue)
         ),
         card(
           card_header("Modo de transporte e faixa etária das vítimas"),
           full_screen = TRUE,
-          plotlyOutput(outputId = "heatmap")
+          withSpinner(plotlyOutput(outputId = "heatmap"), type = 8,
+                      color = onsv_palette$blue)
         )
       )
     )
@@ -121,7 +127,7 @@ filter_sidebar <- sidebar(
     inputId = "ano",
     label = "Selecione o ano",
     choices = seq(1996, 2022, 1),
-    selected = 2020
+    selected = last(seq(1996, 2022, 1))
   ),
   actionButton(
     inputId = "filter",
@@ -174,7 +180,7 @@ server <- function(input, output) {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
-    prep_ts(rtdeaths, input$ano, input$municipio)
+    prep_ts(rtdeaths, input$municipio)
   })
   
   make_bars <- eventReactive(input$filter, {
@@ -182,6 +188,13 @@ server <- function(input, output) {
     req(input$ano)
     req(input$municipio)
     prep_bars(rtdeaths, input$ano, input$municipio)
+  })
+  
+  make_heatmap <- eventReactive(input$filter, {
+    req(input$uf)
+    req(input$ano)
+    req(input$municipio)
+    prep_heatmap(rtdeaths, input$ano, input$municipio)
   })
   
   get_muni <- eventReactive(input$filter, {
@@ -235,7 +248,7 @@ server <- function(input, output) {
     make_bars()
   })
   output$heatmap <- renderPlotly({
-    
+    make_heatmap()
   })
 }
 
