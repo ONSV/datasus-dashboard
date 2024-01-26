@@ -6,7 +6,9 @@ library(plotly)
 library(leaflet)
 library(here)
 library(shinycssloaders)
-source(here("R","utils.R"))
+library(sf)
+library(tidyverse)
+source("R/utils.R")
 
 ## Home ---
 
