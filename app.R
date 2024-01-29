@@ -4,9 +4,11 @@ library(bslib)
 library(onsvplot)
 library(plotly)
 library(leaflet)
-library(here)
+library(markdown)
 library(shinycssloaders)
-source(here("R","utils.R"))
+library(sf)
+library(tidyverse)
+source("R/utils.R")
 
 ## Home ---
 
@@ -219,7 +221,7 @@ server <- function(input, output) {
     filter(
       rtdeaths, 
       ano_ocorrencia == input$ano, 
-      cod_municipio_ocor == input$municipio
+      cod_municipio_res == input$municipio
     ) |> nrow()
   })
   
