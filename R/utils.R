@@ -12,7 +12,7 @@ prep_pyramid <- function(data, year, cod) {
     rename(code_muni = cod_municipio_res) |> 
     relocate(code_muni) |>  
     filter(ano_ocorrencia == year) |> 
-    left_join(x = municipios, by = "code_muni") |> 
+    left_join(x = municipios, by = "code_muni", relationship = "many-to-many") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
     count(faixa_etaria_vitima, sexo_vitima, name = "mortes") |> 
@@ -54,7 +54,7 @@ prep_ts <- function(data, cod) {
   res <-
     tibble(data) |> 
     rename(code_muni = cod_municipio_res) |>
-    left_join(x = municipios, "code_muni") |> 
+    left_join(x = municipios, by = "code_muni", relationship = "many-to-many") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
     count(ano_ocorrencia, name = "mortes") |> 
@@ -83,7 +83,7 @@ prep_bars <- function(data, year, cod) {
     tibble(data) |> 
     rename(code_muni = cod_municipio_res) |> 
     filter(ano_ocorrencia == year) |> 
-    left_join(x = municipios, "code_muni") |> 
+    left_join(x = municipios, by = "code_muni", relationship = "many-to-many") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
     count(modal_vitima, name = "mortes") |> 
@@ -108,7 +108,7 @@ prep_map <- function(data, year, uf, cod) {
     rename(code_muni = cod_municipio_res) |> 
     filter(ano_ocorrencia == year) |> 
     count(code_muni, name = "mortes") |> 
-    left_join(x = municipios, by = "code_muni") |> 
+    left_join(x = municipios, by = "code_muni", relationship = "many-to-many") |> 
     mutate(mortes = replace_na(mortes, 0)) |> 
     filter(abbrev_state == uf) |> 
     st_transform(crs = '+proj=longlat +datum=WGS84')
@@ -190,7 +190,7 @@ prep_heatmap <- function(data, year, cod) {
     tibble(rtdeaths) |> 
     rename(code_muni = cod_municipio_res) |> 
     filter(ano_ocorrencia == year) |> 
-    left_join(x = municipios, by = "code_muni") |> 
+    left_join(x = municipios, by = "code_muni", relationship = "many-to-many") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
     count(faixa_etaria_vitima, modal_vitima, name = "mortes") |> 
