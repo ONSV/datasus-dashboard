@@ -18,7 +18,7 @@ home_panel <- nav_panel(
   icon = bsicons::bs_icon("house"),
   layout_columns(
     fill = FALSE,
-    height = "90px",
+    height = "120px",
     value_box(
       title = "Município",
       value = textOutput(
