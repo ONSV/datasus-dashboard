@@ -7,6 +7,7 @@ library(markdown)
 library(shinycssloaders)
 library(sf)
 library(tidyverse)
+library(shinyFeedback)
 source("R/utils.R")
 
 ## Home ---
@@ -141,6 +142,7 @@ filter_sidebar <- sidebar(
 ## UI ----
 
 ui <- page_navbar(
+  nav_item(useShinyFeedback()),
   title = "Óbitos no Trânsito Brasileiro",
   home_panel,
   about_panel,
@@ -163,57 +165,72 @@ server <- function(input, output) {
                          choices = select_filter(lista_municipios, input$uf))
   })
   
-  make_map <- eventReactive(input$filter, {
+  check_inputs <- observe({
+    existe_uf <- input$uf == ""
+    existe_ano <- input$ano == ""
+    existe_municipio <- input$municipio == ""
+    feedbackWarning("uf", existe_uf, "", icon = NULL)
+    feedbackWarning("ano", existe_ano, "", icon = NULL)
+    feedbackWarning("municipio", existe_municipio, "", icon = NULL)
+  })
+  
+  make_map <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_map(rtdeaths, input$ano, input$uf, input$municipio)
   })
   
-  make_pyramid <- eventReactive(input$filter, {
+  make_pyramid <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_pyramid(rtdeaths, input$ano, input$municipio)
   })
   
-  make_ts <- eventReactive(input$filter, {
+  make_ts <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_ts(rtdeaths, input$municipio)
   })
   
-  make_bars <- eventReactive(input$filter, {
+  make_bars <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_bars(rtdeaths, input$ano, input$municipio)
   })
   
-  make_heatmap <- eventReactive(input$filter, {
+  make_heatmap <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_heatmap(rtdeaths, input$ano, input$municipio)
   })
   
-  get_muni <- eventReactive(input$filter, {
+  get_muni <- eventReactive(input$filter, ignoreNULL = F, {
+    req(input$uf)
+    req(input$ano)
     req(input$municipio)
     code_to_name_muni(input$municipio)
   })
   
-  get_uf <- eventReactive(input$filter, {
+  get_uf <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
+    req(input$ano)
+    req(input$municipio)
     uf_acronym_to_name(input$uf)
   })
   
-  get_region <- eventReactive(input$filter, {
+  get_region <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
+    req(input$ano)
+    req(input$municipio)
     uf_to_region(input$uf)
   })
   
-  get_deaths <- eventReactive(input$filter, {
+  get_deaths <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
