@@ -163,57 +163,57 @@ server <- function(input, output) {
                          choices = select_filter(lista_municipios, input$uf))
   })
   
-  make_map <- eventReactive(input$filter, {
+  make_map <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_map(rtdeaths, input$ano, input$uf, input$municipio)
   })
   
-  make_pyramid <- eventReactive(input$filter, {
+  make_pyramid <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_pyramid(rtdeaths, input$ano, input$municipio)
   })
   
-  make_ts <- eventReactive(input$filter, {
+  make_ts <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_ts(rtdeaths, input$municipio)
   })
   
-  make_bars <- eventReactive(input$filter, {
+  make_bars <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_bars(rtdeaths, input$ano, input$municipio)
   })
   
-  make_heatmap <- eventReactive(input$filter, {
+  make_heatmap <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
     prep_heatmap(rtdeaths, input$ano, input$municipio)
   })
   
-  get_muni <- eventReactive(input$filter, {
+  get_muni <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$municipio)
     code_to_name_muni(input$municipio)
   })
   
-  get_uf <- eventReactive(input$filter, {
+  get_uf <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     uf_acronym_to_name(input$uf)
   })
   
-  get_region <- eventReactive(input$filter, {
+  get_region <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     uf_to_region(input$uf)
   })
   
-  get_deaths <- eventReactive(input$filter, {
+  get_deaths <- eventReactive(input$filter, ignoreNULL = F, {
     req(input$uf)
     req(input$ano)
     req(input$municipio)
