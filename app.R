@@ -136,7 +136,8 @@ filter_sidebar <- sidebar(
     label = "Aplicar",
     icon = icon("cog"),
     class = "btn-primary"
-  )
+  ),
+  img(src = "logo.png", width = "200px", height = "auto")
 )
 
 ## UI ----
