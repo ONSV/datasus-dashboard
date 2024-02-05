@@ -24,5 +24,5 @@ jobs:
           accountName: onsv
 
           # token and secret obtained from https://www.shinyapps.io/admin/#/tokens
-          accountToken: ${{ secrets.5983957AC04E43098EEBE394E911E442 }}
-          accountSecret: ${{ secrets.ASF1xC4asFQ2pdEKA7+8bNCnUe/jHquN7RA8D2MN }}
+          accountToken: ${{ secrets.'5983957AC04E43098EEBE394E911E442' }}
+          accountSecret: ${{ secrets.'ASF1xC4asFQ2pdEKA7+8bNCnUe/jHquN7RA8D2MN' }}
