@@ -86,16 +86,36 @@ prep_bars <- function(data, year, cod) {
     left_join(x = municipios, by = "code_muni", relationship = "many-to-many") |> 
     st_drop_geometry() |> 
     filter(code_muni == cod) |> 
-    count(modal_vitima, name = "mortes") |> 
-    complete(modal_vitima = unique(data$modal_vitima),
-             fill = list(mortes = 0))
+    count(modal_vitima, sexo_vitima, name = "mortes") |> 
+    complete(
+      modal_vitima = unique(data$modal_vitima),
+      sexo_vitima = unique(data$sexo_vitima),
+      fill = list(mortes = 0)
+    ) |> 
+    pivot_wider(
+      names_from = sexo_vitima,
+      values_from = mortes
+    )
   
   plot <- res |> 
-    plot_ly(x = ~mortes, y = ~reorder(modal_vitima, mortes), 
-            type = 'bar', marker = list(color = 'rgb(0, 73, 109)')) |> 
-    layout(xaxis = list(title = ""),
-           yaxis = list(title = "", ticklen = 1, tickcolor = "white"))
-    
+    plot_ly(
+      x = ~Masculino, 
+      y = ~modal_vitima, 
+      type = 'bar', 
+      name = "Masculino",
+      marker = list(color = onsv_palette$yellow)
+      # marker = list(color = 'rgb(0, 73, 109)')
+    ) |> 
+    add_trace(
+      x = ~Feminino,
+      name = "Feminino",
+      marker = list(color = onsv_palette$blue)
+    ) |> 
+    layout(
+      xaxis = list(title = ""),
+      yaxis = list(title = "", ticklen = 1, tickcolor = "white"),
+      barmode = "stack"
+    )
   
   return(plot)
 }
