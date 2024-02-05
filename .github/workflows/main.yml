@@ -1,0 +1,28 @@
+name: Deploy to shinyapps.io
+on:
+
+  # run on any push 
+  push:
+
+  # run on request (via button in actions menu)
+  workflow_dispatch:
+      
+jobs:
+  deploy:
+    name: Deploy to shinyapps
+
+    # allow skipping deployment for commits containing '[automated]' or '[no-deploy]' in the commit message
+    if: "!contains(github.event.head_commit.message, '[automated]') && !contains(github.event.head_commit.message, '[no-deploy]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: deploy
+        uses: BDSI-Utwente/shinyapps-deploy-github-action@v1
+        with:
+          # account and application name (https://<accountName>.shinyapps.io/<appName>)
+          appName: datasus-dashboard
+          accountName: onsv
+
+          # token and secret obtained from https://www.shinyapps.io/admin/#/tokens
+          accountToken: ${{ secrets.5983957AC04E43098EEBE394E911E442 }}
+          accountSecret: ${{ secrets.ASF1xC4asFQ2pdEKA7+8bNCnUe/jHquN7RA8D2MN }}
