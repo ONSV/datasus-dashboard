@@ -99,11 +99,11 @@ about_panel <- nav_panel(
   layout_columns(
     card(
       card_header("Metodologia"),
-      includeMarkdown("text/metodologia.md")
+      includeMarkdown("../text/metodologia.md")
     ),
     card(
       card_header("Versionamento"),
-      includeMarkdown("text/versionamento.md")
+      includeMarkdown("../text/versionamento.md")
     )
   )
 )
