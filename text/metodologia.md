@@ -1,6 +1,6 @@
 ### Fontes
 
-Os dados de óbitos relacionadas à sinistros de trânsito têm como fonte o **Sistema de Informações de Mortalidade (SIM)**, do **Departamento de Informática do Sistema Único de Saúde do Brasil (DATASUS) - Ministério da Saúde**. Filtrou-se as declarações de óbito cuja causa se encontra entre os códigos CID-10 entre V01 e V89. A separação por unidade geográfica considerou o código do município de ocorrência na declaração de óbito. Os dados foram coletados com auxílio do pacote [`microdatasus`](www.github.com/rfsaldanha/microdatasus) e compilados no pacote [`roadtrafficdeaths`](www.github.com/pabsantos/roadtrafficdeaths).
+Os dados de óbitos relacionadas à sinistros de trânsito têm como fonte o **Sistema de Informações de Mortalidade (SIM)**, do **Departamento de Informática do Sistema Único de Saúde do Brasil (DATASUS) - Ministério da Saúde**. Filtrou-se as declarações de óbito cuja causa se encontra entre os códigos CID-10 entre V01 e V89. A separação por unidade geográfica considerou o código do município de **residência** na declaração de óbito. Os dados foram coletados com auxílio do pacote [`microdatasus`](www.github.com/rfsaldanha/microdatasus) e compilados no pacote [`roadtrafficdeaths`](www.github.com/pabsantos/roadtrafficdeaths).
 
 A classificação por modal da vítima foi realizada no seguinte formato:
 
@@ -17,7 +17,7 @@ A malha municipal utilizada tem como fonte o **Instituto Brasileiro de Geografia
 
 ### Autoria
 
-Esse dashboard foi desenvolvido por [João Pedro Saraiva](https://www.github.com/jotasaraiva) (joao.saraiva@onsv.org.br) e [Pedro Augusto Borges dos Santos](https://www.github.com/pabsantos). O [**Observatório Nacional de Segurança Viária**](https://www.onsv.org.br) (pedro.borges@onsv.org.br) detém os direitos autorais. O código desse dashboard pode ser acessado no [repositório do GitHub](https://github.com/onsv/datasus-dashboard) do Observatório. 
+Esse dashboard foi desenvolvido por [João Pedro Saraiva](https://www.github.com/jotasaraiva) (joao.saraiva@onsv.org.br) e [Pedro Augusto Borges dos Santos](https://www.github.com/pabsantos) (pedro.borges@onsv.org.br). O [**Observatório Nacional de Segurança Viária**](https://www.onsv.org.br) detém os direitos autorais. O código desse dashboard pode ser acessado no [repositório do GitHub](https://github.com/onsv/datasus-dashboard) do Observatório. 
 
 ### Referências
 
