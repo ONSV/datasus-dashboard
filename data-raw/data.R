@@ -17,7 +17,7 @@ save(regioes,file = here("data", "regioes.rda"))
 
 # salvando rtdeaths para melhorar performance
 
-library(roadtrafficdeaths)
+#library(roadtrafficdeaths)
 save(rtdeaths, file = here("data","rtdeaths.rda"))
 
 # salvando códigos de municípios IBGE
