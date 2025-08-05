@@ -99,11 +99,11 @@ about_panel <- nav_panel(
   layout_columns(
     card(
       card_header("Metodologia"),
-      includeMarkdown("text/metodologia.md")
+      includeMarkdown(here("text/metodologia.md"))
     ),
     card(
       card_header("Versionamento"),
-      includeMarkdown("text/versionamento.md")
+      includeMarkdown(here("text/versionamento.md"))
     )
   )
 )
@@ -126,8 +126,8 @@ filter_sidebar <- sidebar(
   selectizeInput(
     inputId = "ano",
     label = "Selecione o ano",
-    choices = seq(1996, 2022, 1),
-    selected = last(seq(1996, 2022, 1))
+    choices = seq(1996, 2023, 1),
+    selected = last(seq(1996, 2023, 1))
   ),
   actionButton(
     inputId = "filter",
