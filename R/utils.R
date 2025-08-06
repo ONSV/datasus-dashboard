@@ -1,8 +1,10 @@
-load("data/estados.rda")
-load("data/municipios.rda")
-load("data/regioes.rda")
-load("data/rtdeaths.rda")
-load("data/lista_municipios.rda")
+library(here)
+
+load(here("data", "estados.rda"))
+load(here("data", "municipios.rda"))
+load(here("data", "regioes.rda"))
+load(here("data", "rtdeaths.rda"))
+load(here("data", "lista_municipios.rda"))
 
 # função para pirâmide etária
 

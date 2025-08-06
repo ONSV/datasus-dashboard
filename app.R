@@ -1,4 +1,5 @@
 library(shiny)
+library(here)
 library(bslib)
 library(onsvplot)
 library(plotly)
@@ -128,8 +129,8 @@ filter_sidebar <- sidebar(
   selectizeInput(
     inputId = "ano",
     label = "Selecione o ano",
-    choices = seq(1996, 2022, 1),
-    selected = last(seq(1996, 2022, 1))
+    choices = seq(1996, 2023, 1),
+    selected = last(seq(1996, 2023, 1))
   ),
   actionButton(
     inputId = "filter",
